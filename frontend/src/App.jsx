@@ -11,6 +11,7 @@ import {
   Plus, 
   Trash2, 
   Play, 
+  Edit2, 
   Send, 
   Radio, 
   Search, 
@@ -50,6 +51,7 @@ function App() {
 
   // Modals & Floating panels
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+  const [editingRule, setEditingRule] = useState(null);
   const [isSimOpen, setIsSimOpen] = useState(false);
   const [manualReplyTexts, setManualReplyTexts] = useState({});
 
@@ -192,19 +194,46 @@ function App() {
   const handleCreateRule = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE}/rules`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newRule)
-      });
+      let res;
+      if (editingRule) {
+        res = await fetch(`${API_BASE}/rules/${editingRule.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...newRule, isActive: editingRule.isActive })
+        });
+      } else {
+        res = await fetch(`${API_BASE}/rules`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newRule)
+        });
+      }
       if (res.ok) {
         setIsRuleModalOpen(false);
+        setEditingRule(null);
         setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains' });
         fetchRules();
       }
     } catch (e) {
-      console.error('Error creating rule:', e);
+      console.error('Error saving rule:', e);
     }
+  };
+
+  const handleOpenEdit = (rule) => {
+    setEditingRule(rule);
+    setNewRule({
+      keyword: rule.keyword,
+      replyType: rule.replyType,
+      replyContent: rule.replyContent,
+      matchType: rule.matchType
+    });
+    setIsRuleModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsRuleModalOpen(false);
+    setEditingRule(null);
+    setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains' });
   };
 
   const handleToggleRule = async (rule) => {
@@ -782,13 +811,23 @@ function App() {
                       </span>
                     </div>
 
-                    <button 
-                      className="btn" 
-                      style={{ background: 'none', border: 'none', color: 'var(--text-dark)', padding: '4px' }}
-                      onClick={() => handleDeleteRule(rule.id)}
-                    >
-                      <Trash2 size={16} className="delete-rule-btn" />
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button 
+                        className="btn" 
+                        style={{ background: 'none', border: 'none', color: 'var(--text-dark)', padding: '4px', cursor: 'pointer' }}
+                        onClick={() => handleOpenEdit(rule)}
+                      >
+                        <Edit2 size={16} style={{ color: 'var(--text-muted)' }} />
+                      </button>
+                      
+                      <button 
+                        className="btn" 
+                        style={{ background: 'none', border: 'none', color: 'var(--text-dark)', padding: '4px' }}
+                        onClick={() => handleDeleteRule(rule.id)}
+                      >
+                        <Trash2 size={16} className="delete-rule-btn" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -891,8 +930,8 @@ function App() {
         <div className="modal-overlay animate-fade-in">
           <div className="glass-panel modal-content">
             <div className="modal-header">
-              <h2>Create Auto-Reply Rule</h2>
-              <X size={18} className="modal-close" onClick={() => setIsRuleModalOpen(false)} />
+              <h2>{editingRule ? 'Edit Auto-Reply Rule' : 'Create Auto-Reply Rule'}</h2>
+              <X size={18} className="modal-close" onClick={handleCloseModal} />
             </div>
 
             <form onSubmit={handleCreateRule}>
@@ -947,8 +986,8 @@ function App() {
               </div>
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setIsRuleModalOpen(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Create Rule</button>
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                <button type="submit" className="btn btn-primary">{editingRule ? 'Save Changes' : 'Create Rule'}</button>
               </div>
             </form>
           </div>
