@@ -31,6 +31,8 @@ function App() {
     totalPosts: 289,
     commentsReceived: 0,
     commentsAutoReplied: 0,
+    messagesReceived: 0,
+    messagesAutoReplied: 0,
     autoReplyRate: 0,
     totalLikes: 0,
     pendingWebhooks: 0,
@@ -406,6 +408,15 @@ function App() {
                 </div>
                 <div className="stat-value">{stats.commentsReceived}</div>
                 <p>● {stats.commentsAutoReplied} auto-replied</p>
+              </div>
+
+              <div className="glass-panel stat-card">
+                <div className="stat-card-header">
+                  <span>Messages Received</span>
+                  <MessageSquare size={16} style={{ color: 'var(--primary)' }} />
+                </div>
+                <div className="stat-value">{stats.messagesReceived}</div>
+                <p>● {stats.messagesAutoReplied} auto-replied</p>
               </div>
 
               <div className="glass-panel stat-card">

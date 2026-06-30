@@ -353,6 +353,8 @@ async function getAggregatedStats() {
     totalPosts: postIds.length || 289, // fallback to match mockup
     commentsReceived: totalComments,
     commentsAutoReplied: commentAutoReplies,
+    messagesReceived: totalMessages,
+    messagesAutoReplied: messageAutoReplies,
     autoReplyRate: autoReplyRate,
     totalLikes: totalLikes,
     pendingWebhooks: webhookLogsCount,
