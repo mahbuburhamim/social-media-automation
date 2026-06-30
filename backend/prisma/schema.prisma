@@ -47,6 +47,7 @@ model AutoReplyRule {
   keyword      String   // e.g. "price", "details", "delivery"
   replyType    String   @default("comment") // "comment" or "message" or "both"
   replyContent String
+  attachmentUrl String?  // Optional image attachment URL
   isActive     Boolean  @default(true)
   matchType    String   @default("contains") // "contains", "exact"
   createdAt    DateTime @default(now())

@@ -60,7 +60,8 @@ function App() {
     keyword: '',
     replyType: 'comment',
     replyContent: '',
-    matchType: 'contains'
+    matchType: 'contains',
+    attachmentUrl: ''
   });
 
   // Simulator state
@@ -211,7 +212,7 @@ function App() {
       if (res.ok) {
         setIsRuleModalOpen(false);
         setEditingRule(null);
-        setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains' });
+        setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains', attachmentUrl: '' });
         fetchRules();
       }
     } catch (e) {
@@ -225,7 +226,8 @@ function App() {
       keyword: rule.keyword,
       replyType: rule.replyType,
       replyContent: rule.replyContent,
-      matchType: rule.matchType
+      matchType: rule.matchType,
+      attachmentUrl: rule.attachmentUrl || ''
     });
     setIsRuleModalOpen(true);
   };
@@ -233,7 +235,7 @@ function App() {
   const handleCloseModal = () => {
     setIsRuleModalOpen(false);
     setEditingRule(null);
-    setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains' });
+    setNewRule({ keyword: '', replyType: 'comment', replyContent: '', matchType: 'contains', attachmentUrl: '' });
   };
 
   const handleToggleRule = async (rule) => {
@@ -794,9 +796,17 @@ function App() {
                     <p style={{ fontSize: '0.875rem', lineHeight: '1.5', background: 'rgba(0,0,0,0.15)', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.02)' }}>
                       "{rule.replyContent}"
                     </p>
+                    {rule.attachmentUrl && (
+                      <div style={{ marginTop: '8px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary)' }}>
+                        <Share2 size={12} />
+                        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '220px' }} title={rule.attachmentUrl}>
+                          Image: {rule.attachmentUrl}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', borderTop: '1px solid var(--border-glass)', paddingTopping: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', borderTop: '1px solid var(--border-glass)', paddingTop: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <label className="switch">
                         <input 
@@ -982,6 +992,17 @@ function App() {
                   value={newRule.replyContent}
                   onChange={(e) => setNewRule(prev => ({ ...prev, replyContent: e.target.value }))}
                   style={{ resize: 'none', fontFamily: 'inherit' }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Attachment Image URL (Optional)</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="e.g. https://laundrybondhu.com/assets/price-list.png"
+                  value={newRule.attachmentUrl}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, attachmentUrl: e.target.value }))}
                 />
               </div>
 

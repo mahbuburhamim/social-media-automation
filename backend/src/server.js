@@ -67,15 +67,16 @@ async function matchAndReply(content, type, targetId, authorName) {
 
   if (matchedRule) {
     let replyText = matchedRule.replyContent;
+    const attachmentUrl = matchedRule.attachmentUrl;
     if (authorName) {
       replyText = replyText.replace(/{name}/g, authorName);
     }
 
     try {
       if (type === 'comment') {
-        await sendCommentReply(targetId, replyText);
+        await sendCommentReply(targetId, replyText, attachmentUrl);
       } else if (type === 'message') {
-        await sendMessengerMessage(targetId, replyText);
+        await sendMessengerMessage(targetId, replyText, attachmentUrl);
       }
       return replyText;
     } catch (err) {
@@ -479,10 +480,10 @@ app.get('/api/rules', async (req, res) => {
 });
 
 app.post('/api/rules', async (req, res) => {
-  const { keyword, replyType, replyContent, matchType } = req.body;
+  const { keyword, replyType, replyContent, matchType, attachmentUrl } = req.body;
   try {
     const rule = await prisma.autoReplyRule.create({
-      data: { keyword, replyType, replyContent, matchType }
+      data: { keyword, replyType, replyContent, matchType, attachmentUrl }
     });
     broadcastEvent('stats-update', await getAggregatedStats());
     return res.status(201).json(rule);
@@ -493,11 +494,11 @@ app.post('/api/rules', async (req, res) => {
 
 app.put('/api/rules/:id', async (req, res) => {
   const { id } = req.params;
-  const { keyword, replyType, replyContent, matchType, isActive } = req.body;
+  const { keyword, replyType, replyContent, matchType, isActive, attachmentUrl } = req.body;
   try {
     const rule = await prisma.autoReplyRule.update({
       where: { id: parseInt(id) },
-      data: { keyword, replyType, replyContent, matchType, isActive }
+      data: { keyword, replyType, replyContent, matchType, isActive, attachmentUrl }
     });
     broadcastEvent('stats-update', await getAggregatedStats());
     return res.status(200).json(rule);
