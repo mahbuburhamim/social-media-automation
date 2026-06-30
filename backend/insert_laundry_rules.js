@@ -3,11 +3,11 @@ require('dotenv').config();
 
 const prisma = new PrismaClient();
 
-const customLaundryRules = [
+const pureBengaliLaundryRules = [
   {
     keyword: 'price',
     replyType: 'both',
-    replyContent: 'Hello {name}! Our wash & iron starts from 10 Tk/pcs. Check our full price list here: https://laundrybondhu.com/pricing 🧺✨',
+    replyContent: 'হ্যালো {name}! আমাদের ওয়াশ ও আয়রন ১০ টাকা থেকে শুরু। রেট চার্ট দেখতে ভিজিট করুন: https://laundrybondhu.com/pricing 🧺',
     matchType: 'contains'
   },
   {
@@ -19,7 +19,7 @@ const customLaundryRules = [
   {
     keyword: 'rate',
     replyType: 'both',
-    replyContent: 'Hello {name}! Our wash & iron starts from 10 Tk/pcs. Check our full price list here: https://laundrybondhu.com/pricing 🧺✨',
+    replyContent: 'হ্যালো {name}! আমাদের ওয়াশ ও আয়রন ১০ টাকা থেকে শুরু। রেট চার্ট দেখতে ভিজিট করুন: https://laundrybondhu.com/pricing 🧺',
     matchType: 'contains'
   },
   {
@@ -67,7 +67,7 @@ const customLaundryRules = [
 ];
 
 async function insertRules() {
-  console.log('--- Inserting customized Laundry Bondhu Auto-Reply Rules into Supabase ---');
+  console.log('--- Re-inserting Pure Bengali Laundry Bondhu Rules into Supabase ---');
   try {
     // Delete existing rules
     await prisma.autoReplyRule.deleteMany({});
@@ -75,9 +75,9 @@ async function insertRules() {
 
     // Insert customized rules
     const createdCount = await prisma.autoReplyRule.createMany({
-      data: customLaundryRules
+      data: pureBengaliLaundryRules
     });
-    console.log(`Successfully updated database with ${createdCount.count} customized laundry rules!`);
+    console.log(`Successfully updated database with ${createdCount.count} pure Bengali rules!`);
   } catch (error) {
     console.error('Failed to update rules:', error.message);
   } finally {
