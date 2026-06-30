@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id             Int      @id @default(autoincrement())
+  platform       String   // "facebook", "instagram", etc.
+  name           String
+  accessToken    String?
+  profilePicture String?
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+}
+
+model Comment {
+  id            String   @id // Facebook comment ID
+  commentText   String
+  authorName    String
+  authorId      String?
+  postId        String
+  postTitle     String?
+  platform      String   @default("facebook")
+  replyText     String?
+  isAutoReplied Boolean  @default(false)
+  likes         Int      @default(0)
+  createdAt     DateTime @default(now())
+}
+
+model Message {
+  id            String   @id // Facebook message ID
+  senderId      String
+  senderName    String
+  messageText   String
+  replyText     String?
+  isAutoReplied Boolean  @default(false)
+  platform      String   @default("facebook")
+  createdAt     DateTime @default(now())
+}
+
+model AutoReplyRule {
+  id           Int      @id @default(autoincrement())
+  keyword      String   // e.g. "price", "details", "delivery"
+  replyType    String   @default("comment") // "comment" or "message" or "both"
+  replyContent String
+  isActive     Boolean  @default(true)
+  matchType    String   @default("contains") // "contains", "exact"
+  createdAt    DateTime @default(now())
+}
+
+model WebhookLog {
+  id         Int      @id @default(autoincrement())
+  payload    String   // JSON stringified webhook data
+  receivedAt DateTime @default(now())
+}
