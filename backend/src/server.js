@@ -236,7 +236,7 @@ app.post('/api/simulate/webhook', async (req, res) => {
             verb: 'add',
             comment_id: commentId,
             message: content,
-            sender_name: authorName || 'Mehidi Hasan Hridoy',
+            sender_name: authorName || 'Mahbubur Hamim',
             sender_id: `sim_user_${Math.floor(Math.random() * 1000000)}`,
             post_id: mockPostId,
             post: {

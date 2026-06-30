@@ -68,7 +68,7 @@ function App() {
   const [simType, setSimType] = useState('comment');
   const [simData, setSimData] = useState({
     content: 'Price please?',
-    authorName: 'Mehidi Hasan Hridoy',
+    authorName: 'Mahbubur Hamim',
     postId: 'sim_post_289',
     postTitle: 'In sha allha'
   });
